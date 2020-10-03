@@ -47,6 +47,10 @@ class RegexMetaDataCheck(MetaDataCheck):
                     metadatas[meta_re["metadata"]] = meta_re["value"]
                 continue
             m = re.findall(meta_re["regex"], content)
+            # DJR
+            _logger.error(">>>Regex to match on: %s", meta_re["regex"])
+            _logger.error(">>>Content to match in:\n%s", content)
+            _logger.error(">>>List of matches: %s", m)
             if len(m) == 0:
                 _logger.info("%s not found in document", meta_re["metadata"])
                 continue
@@ -54,7 +58,7 @@ class RegexMetaDataCheck(MetaDataCheck):
                 if not callable(meta_re["selector"]):
                     _logger.warn("selector not callable")
                     continue
-                meta_re["selector"](m)
+                value = meta_re["selector"](m)
             else:
                 value = m[meta_re.get("slice", 0)]
             if meta_re.get("join", False):
